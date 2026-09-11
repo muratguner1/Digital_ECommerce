@@ -1,0 +1,6 @@
+@Digital_API_Layer_HostAddress = http://localhost:5001
+
+GET {{Digital_API_Layer_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
