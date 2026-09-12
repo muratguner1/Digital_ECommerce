@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Digital_Domain_Layer.Base;
 
 namespace Digital_Domain_Layer.Entities;
 
-public class ProductImage
+public class ProductImage : BaseEntity
 {
     [ForeignKey(nameof(Product))]
-    public int ProductId { get; set; }
+    public Guid ProductId { get; set; }
     public virtual Product Product { get; set; }
 }

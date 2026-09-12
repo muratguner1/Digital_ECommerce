@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Digital_Domain_Layer.Base;
 using Digital_Domain_Layer.Enums;
 
 namespace Digital_Domain_Layer.Entities;
 
-public class Product
+public class Product : BaseEntity
 {
     public string ProductName { get; set; }
     public decimal ProductPrice { get; set; }

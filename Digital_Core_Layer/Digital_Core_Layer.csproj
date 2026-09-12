@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Digital_Persistence_Layer\Digital_Persistence_Layer.csproj" />
+    </ItemGroup>
+    
 </Project>

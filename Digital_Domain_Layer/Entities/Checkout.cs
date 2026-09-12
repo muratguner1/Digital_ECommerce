@@ -1,6 +1,8 @@
+using Digital_Domain_Layer.Base;
+
 namespace Digital_Domain_Layer.Entities;
 
-public class Checkout
+public class Checkout : BaseEntity
 {
     public string Address { get; set; }
     public string PhoneNumber { get; set; }
