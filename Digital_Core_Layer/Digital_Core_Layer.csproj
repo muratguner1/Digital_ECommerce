@@ -7,6 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.7.0" />
+        <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.7.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Digital_Infrastructure_Layer\Digital_Infrastructure_Layer.csproj" />
       <ProjectReference Include="..\Digital_Persistence_Layer\Digital_Persistence_Layer.csproj" />
     </ItemGroup>
     

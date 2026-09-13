@@ -1,8 +1,11 @@
 using Digital_Domain_Layer.Entities;
+using Digital_Infrastructure_Layer.Extensions;
+using Digital_Infrastructure_Layer.Models;
 using Digital_Persistence_Layer.AppDbContext;
 using Digital_Persistence_Layer.Model;
 using Digital_Persistence_Layer.Repositories.Interface;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 
 namespace Digital_Persistence_Layer.Repositories.Concrete;
 
@@ -10,16 +13,49 @@ public class UserRepository : Repository<User>, IUserRepository
 {
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly string secretKey;
 
-    public UserRepository(ApplicationDbContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager) : base(context)
+    public UserRepository(ApplicationDbContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration) : base(context)
     {
+        secretKey = configuration["JWTSettings:SecretKey"];
         _userManager = userManager;
         _roleManager = roleManager;
     }
 
-    public Task<BaseResponseModel> Login(LoginModel model)
+    public async Task<BaseResponseModel> Login(LoginModel model)
     {
-        throw new NotImplementedException();
+        bool isItTrue = await isAnyItem(x => x.Email == model.Email);
+        if (isItTrue)
+        {
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            var isValid = user != null && await _userManager.CheckPasswordAsync(user, model.Password);
+            if (isValid)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                TokenModel token = HandleTokenValidator.HandleToken(roles, user, secretKey);
+                
+                return new BaseResponseModel
+                {
+                    Success = true,
+                    Message = "Login Successful",
+                    Result =  token,
+                };
+            }
+            else
+            {
+                return new BaseResponseModel
+                {
+                    Success = false,
+                    Message = "Invalid password",
+                };
+            }
+        }
+
+        return new BaseResponseModel
+        {
+            Success = false,
+            Message = "Login Failed",
+        };
     }
 
     public async Task<BaseResponseModel> Register(RegisterModel model)

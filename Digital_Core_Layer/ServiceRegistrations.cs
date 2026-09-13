@@ -12,12 +12,13 @@ namespace Digital_Core_Layer;
 
 public static class ServiceRegistrations
 {
-    public static void AddCoreRegisterServices(this IServiceCollection services, IConfiguration configuration = null)
+    public static void AddCoreRegisterServices(this IServiceCollection Services, IConfiguration Configuration = null)
     {
-        services.AddPersistenceServiceRegistration(configuration);
-        services.AddScoped<IUserService, UserService>();
-        services.AddDbContext<ApplicationDbContext>(opt=> opt.UseNpgsql(configuration?.GetConnectionString("DefaultConnection")));
-        services.AddIdentityCore<User>()
+        Services.AddPersistenceServiceRegistration(Configuration);
+        Services.AddScoped<IUserService, UserService>();
+        Services.AddDbContext<ApplicationDbContext>(opt =>
+            opt.UseNpgsql(Configuration?.GetConnectionString("DefaultConnection")));
+        Services.AddIdentityCore<User>()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
     }

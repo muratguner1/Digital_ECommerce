@@ -1,3 +1,4 @@
+using Digital_Infrastructure_Layer;
 using Digital_Persistence_Layer.Model;
 using Digital_Persistence_Layer.Repositories.Concrete;
 using Digital_Persistence_Layer.Repositories.Interface;
@@ -8,10 +9,12 @@ namespace Digital_Persistence_Layer;
 
 public static class ServiceRegistrations
 {
-    public static void AddPersistenceServiceRegistration(this IServiceCollection services, IConfiguration configuration = null)
+    public static void AddPersistenceServiceRegistration(this IServiceCollection Services,
+        IConfiguration Configuration = null)
     {
-        services.AddScoped(typeof(BaseResponseModel));
-        services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        Services.AddScoped(typeof(BaseResponseModel));
+        Services.AddScoped<IUserRepository, UserRepository>();
+        Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+        Services.AddInfrastructureRegisterServices(Configuration);
     }
 }

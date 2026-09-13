@@ -1,4 +1,6 @@
 using Digital_Core_Layer.Services.Abstract;
+using Digital_Infrastructure_Layer.Extensions;
+using Digital_Infrastructure_Layer.Models;
 using Digital_Persistence_Layer.Model;
 using Digital_Persistence_Layer.Repositories.Interface;
 
@@ -11,6 +13,12 @@ public class UserService : IUserService
     public UserService(IUserRepository userRepository)
     {
         _userRepository = userRepository;
+    }
+
+    public async Task<BaseResponseModel> Login(LoginModel model)
+    {
+        var result = await _userRepository.Login(model);
+        return result;
     }
 
     public async Task<BaseResponseModel> Register(RegisterModel model)

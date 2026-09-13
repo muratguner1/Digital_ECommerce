@@ -6,10 +6,10 @@ namespace Digital_API_Layer.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class RegisterController : ControllerBase
+public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
-    public RegisterController(IUserService userService)
+    public UserController(IUserService userService)
     {
         _userService = userService;
     }
@@ -18,6 +18,17 @@ public class RegisterController : ControllerBase
     public async Task<IActionResult> SignUp([FromBody]RegisterModel model)
     {
         var response = await _userService.Register(model);
+        if (response != null)
+        {
+            return  Ok(response);
+        }
+        return BadRequest();
+    }
+    
+    [HttpPost("login")]
+    public async Task<IActionResult> SignIn([FromBody]LoginModel model)
+    {
+        var response = await _userService.Login(model);
         if (response != null)
         {
             return  Ok(response);
