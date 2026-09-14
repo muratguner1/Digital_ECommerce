@@ -1,4 +1,5 @@
 using Digital_Infrastructure_Layer;
+using Digital_Persistence_Layer.MappingProfiles;
 using Digital_Persistence_Layer.Model;
 using Digital_Persistence_Layer.Repositories.Concrete;
 using Digital_Persistence_Layer.Repositories.Interface;
@@ -14,7 +15,9 @@ public static class ServiceRegistrations
     {
         Services.AddScoped(typeof(BaseResponseModel));
         Services.AddScoped<IUserRepository, UserRepository>();
+        Services.AddScoped<IMainCategoryRepository, MainCategoryRepository>();
         Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         Services.AddInfrastructureRegisterServices(Configuration);
+        Services.AddAutoMapper(typeof(MapperProfile));
     }
 }
