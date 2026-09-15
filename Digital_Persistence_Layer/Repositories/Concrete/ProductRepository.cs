@@ -40,7 +40,7 @@ public class ProductRepository : Repository<Product>, IProductRepository
 
     public async Task<BaseResponseModel> GetProductById(Guid id)
     {
-        Product product = await GetById(id);
+        Product product = await GetWhere(x => x.Id == id, x => x.ProductImages);
         var objMap = _mapper.Map<GetProductDTO>(product);
         if (objMap != null)
         {

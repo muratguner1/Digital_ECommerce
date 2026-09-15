@@ -9,6 +9,11 @@ public interface IRepository<T> where T : new()
     Task<bool> isAnyItem(Expression<Func<T, bool>> filter = null);
     Task<IEnumerable<T>> GetAll();
     Task<T?> Add(T entity);
+    Task<List<T>> AddRange(List<T> entities);
+
+    Task<T> GetWhere(Expression<Func<T, bool>> filter = null,
+        params Expression<Func<T, object>>[] includeProperties);
+
     Task<T?> Update(T entity, Guid id);
     Task Delete(Guid id);
 

@@ -55,6 +55,38 @@ public class Repository<T> : IRepository<T> where T : class, new()
         return null;
     }
 
+    public async Task<List<T>> AddRange(List<T> entities)
+    {
+        await Table.AddRangeAsync(entities);
+        if (await _context.SaveChangesAsync() > 0)
+        {
+            return entities;
+        }
+
+        return null;
+    }
+
+    public async Task<T> GetWhere(Expression<Func<T, bool>> filter = null,
+        params Expression<Func<T, object>>[] includeProperties)
+    {
+        IQueryable<T> query = Table.AsQueryable();
+
+        if (includeProperties.Length > 0)
+        {
+            foreach (var item in includeProperties)
+            {
+                query = query.Include(item);
+            }
+        }
+
+        if (filter != null)
+        {
+            query = query.Where(filter);
+        }
+
+        return await query.FirstOrDefaultAsync();
+    }
+
     public async Task<T?> Update(T entity, Guid id)
     {
         var existingEntity = await Table.FindAsync(id);

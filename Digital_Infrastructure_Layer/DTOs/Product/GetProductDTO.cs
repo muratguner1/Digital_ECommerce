@@ -11,7 +11,7 @@ public class GetProductDTO
     public decimal ProductPrice { get; set; }
     public string ProductDescription { get; set; }
     public int ProductStock { get; set; }
-    public Colors Color { get; set; }
+    public string Color { get; set; }
     public virtual ICollection<ProductImage> ProductImages { get; set; }
     public Guid SubCategoryId { get; set; }
 }
