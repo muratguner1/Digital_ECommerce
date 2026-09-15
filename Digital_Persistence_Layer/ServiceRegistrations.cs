@@ -17,6 +17,7 @@ public static class ServiceRegistrations
         Services.AddScoped<IUserRepository, UserRepository>();
         Services.AddScoped<IMainCategoryRepository, MainCategoryRepository>();
         Services.AddScoped<ISubCategoryRepository, SubCategoryRepository>();
+        Services.AddScoped<IProductRepository, ProductRepository>();
         Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         Services.AddInfrastructureRegisterServices(Configuration);
         Services.AddAutoMapper(typeof(MapperProfile));

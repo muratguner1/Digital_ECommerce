@@ -5,7 +5,7 @@ namespace Digital_Domain_Layer.Entities;
 
 public class ProductImage : BaseEntity
 {
-    [ForeignKey(nameof(Product))]
-    public Guid ProductId { get; set; }
+    public string ImageUrl { get; set; }
+    [ForeignKey(nameof(Product))] public Guid ProductId { get; set; }
     public virtual Product Product { get; set; }
 }

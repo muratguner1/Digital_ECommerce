@@ -18,6 +18,7 @@ public static class ServiceRegistrations
         Services.AddScoped<IUserService, UserService>();
         Services.AddScoped<IMainCategoryService, MainCategoryService>();
         Services.AddScoped<ISubCategoryService, SubCategoryService>();
+        Services.AddScoped<IProductService, ProductService>();
         Services.AddDbContext<ApplicationDbContext>(opt =>
             opt.UseNpgsql(Configuration?.GetConnectionString("DefaultConnection")));
         Services.AddIdentityCore<User>()
