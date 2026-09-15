@@ -16,7 +16,10 @@ public class Repository<T> : IRepository<T> where T : class, new()
         _context = context;
     }
 
-    private DbSet<T> Table {get => _context.Set<T>();}
+    private DbSet<T> Table
+    {
+        get => _context.Set<T>();
+    }
 
 
     public async Task<T?> GetById(Guid id)
@@ -32,12 +35,13 @@ public class Repository<T> : IRepository<T> where T : class, new()
         {
             query = query.Where(filter);
         }
+
         return query.AnyAsync();
     }
 
     public async Task<IEnumerable<T>> GetAll()
     {
-        return await Table.ToListAsync();//
+        return await Table.ToListAsync(); //
     }
 
     public async Task<T?> Add(T entity)
@@ -51,7 +55,7 @@ public class Repository<T> : IRepository<T> where T : class, new()
         return null;
     }
 
-    public async Task<T?> Update(T entity,  Guid id)
+    public async Task<T?> Update(T entity, Guid id)
     {
         var existingEntity = await Table.FindAsync(id);
         if (existingEntity != null)
@@ -60,6 +64,7 @@ public class Repository<T> : IRepository<T> where T : class, new()
             await _context.SaveChangesAsync();
             return existingEntity;
         }
+
         return null;
     }
 
@@ -71,10 +76,10 @@ public class Repository<T> : IRepository<T> where T : class, new()
             Table.Remove(entity);
             await _context.SaveChangesAsync();
         }
-        
     }
 
-    public async Task<PagedResult<T>> GetAllPagedResult(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, int pageNumber = 1, int pageSize = 10)
+    public async Task<PagedResult<T>> GetAllPagedResult(Expression<Func<T, bool>> filter = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, int pageNumber = 1, int pageSize = 10)
     {
         IQueryable<T> query = Table.AsQueryable();
         if (filter != null)
@@ -87,6 +92,7 @@ public class Repository<T> : IRepository<T> where T : class, new()
         {
             query = orderBy(query);
         }
+
         List<T> items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
 
         return new PagedResult<T>
@@ -96,5 +102,20 @@ public class Repository<T> : IRepository<T> where T : class, new()
             PageSize = pageSize,
             Items = items,
         };
+    }
+
+    public async Task<IEnumerable<T>> GetWithIncludeProperties(params Expression<Func<T, object>>[] includeProperties)
+    {
+        var query = Table.AsQueryable();
+
+        if (includeProperties.Length > 0)
+        {
+            foreach (var item in includeProperties)
+            {
+                query = query.Include(item);
+            }
+        }
+
+        return await query.ToListAsync();
     }
 }

@@ -39,7 +39,7 @@ public class MainCategoryRepository : Repository<MainCategory>, IMainCategoryRep
 
     public async Task<BaseResponseModel> GetAllMainCategories()
     {
-        var result = await GetAll();
+        var result = await GetWithIncludeProperties(x => x.SubCategories);
         if (result != null)
         {
             return new BaseResponseModel

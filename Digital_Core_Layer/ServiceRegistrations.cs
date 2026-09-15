@@ -17,6 +17,7 @@ public static class ServiceRegistrations
         Services.AddPersistenceServiceRegistration(Configuration);
         Services.AddScoped<IUserService, UserService>();
         Services.AddScoped<IMainCategoryService, MainCategoryService>();
+        Services.AddScoped<ISubCategoryService, SubCategoryService>();
         Services.AddDbContext<ApplicationDbContext>(opt =>
             opt.UseNpgsql(Configuration?.GetConnectionString("DefaultConnection")));
         Services.AddIdentityCore<User>()

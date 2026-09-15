@@ -9,5 +9,6 @@ public class MapperProfile : Profile
     public MapperProfile()
     {
         CreateMap<MainCategoryDTO, MainCategory>().ReverseMap();
+        CreateMap<SubCategoryDTO, SubCategory>().ReverseMap();
     }
 }
