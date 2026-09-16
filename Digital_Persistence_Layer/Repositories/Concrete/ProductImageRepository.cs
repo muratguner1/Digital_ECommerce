@@ -1,7 +1,7 @@
 using Digital_Domain_Layer.Entities;
 using Digital_Persistence_Layer.AppDbContext;
 using Digital_Persistence_Layer.Model;
-using Digital_Persistence_Layer.Repositories.Interface;
+using Digital_Persistence_Layer.Repositories.Abstract;
 using Microsoft.AspNetCore.Http;
 
 namespace Digital_Persistence_Layer.Repositories.Concrete;

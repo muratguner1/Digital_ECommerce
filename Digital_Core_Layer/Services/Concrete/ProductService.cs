@@ -2,7 +2,7 @@ using Digital_Core_Layer.Services.Abstract;
 using Digital_Domain_Layer.Entities;
 using Digital_Infrastructure_Layer.DTOs;
 using Digital_Persistence_Layer.Model;
-using Digital_Persistence_Layer.Repositories.Interface;
+using Digital_Persistence_Layer.Repositories.Abstract;
 
 namespace Digital_Core_Layer.Services.Concrete;
 

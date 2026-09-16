@@ -2,9 +2,9 @@ using Digital_Domain_Layer.Entities;
 using Digital_Infrastructure_Layer.DTOs;
 using Digital_Persistence_Layer.Model;
 
-namespace Digital_Persistence_Layer.Repositories.Interface;
+namespace Digital_Persistence_Layer.Repositories.Abstract;
 
-public interface IProductRepository
+public interface IProductRepository : IRepository<Product>
 {
     Task<BaseResponseModel> GetAllProducts();
     Task<BaseResponseModel> GetProductById(Guid id);

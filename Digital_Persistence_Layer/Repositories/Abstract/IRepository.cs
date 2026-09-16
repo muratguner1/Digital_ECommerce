@@ -1,11 +1,13 @@
 using System.Linq.Expressions;
 using Digital_Domain_Layer.Extensions;
 
-namespace Digital_Persistence_Layer.Repositories.Interface;
+namespace Digital_Persistence_Layer.Repositories.Abstract;
 
 public interface IRepository<T> where T : new()
 {
     Task<T?> GetById(Guid id);
+
+    //Task<T?> GetByIdGeneric<T>(Guid id) where T : class;
     Task<bool> isAnyItem(Expression<Func<T, bool>> filter = null);
     Task<IEnumerable<T>> GetAll();
     Task<T?> Add(T entity);

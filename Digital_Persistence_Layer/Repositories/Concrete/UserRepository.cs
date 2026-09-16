@@ -3,7 +3,7 @@ using Digital_Infrastructure_Layer.Extensions;
 using Digital_Infrastructure_Layer.Models;
 using Digital_Persistence_Layer.AppDbContext;
 using Digital_Persistence_Layer.Model;
-using Digital_Persistence_Layer.Repositories.Interface;
+using Digital_Persistence_Layer.Repositories.Abstract;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
@@ -15,7 +15,8 @@ public class UserRepository : Repository<User>, IUserRepository
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly string secretKey;
 
-    public UserRepository(ApplicationDbContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration) : base(context)
+    public UserRepository(ApplicationDbContext context, UserManager<User> userManager,
+        RoleManager<IdentityRole> roleManager, IConfiguration configuration) : base(context)
     {
         secretKey = configuration["JWTSettings:SecretKey"];
         _userManager = userManager;
@@ -33,12 +34,12 @@ public class UserRepository : Repository<User>, IUserRepository
             {
                 var roles = await _userManager.GetRolesAsync(user);
                 TokenModel token = HandleTokenValidator.HandleToken(roles, user, secretKey);
-                
+
                 return new BaseResponseModel
                 {
                     Success = true,
                     Message = "Login Successful",
-                    Result =  token,
+                    Result = token,
                 };
             }
             else
@@ -65,18 +66,18 @@ public class UserRepository : Repository<User>, IUserRepository
         {
             return new BaseResponseModel
             {
-                Success =  false,
+                Success = false,
                 Message = "This email is already registered",
             };
         }
-        
+
         var user = new User
         {
             Email = model.Email,
             UserName = model.Email,
             Name = model.Name,
         };
-        
+
         var result = await _userManager.CreateAsync(user, model.Password);
 
         if (result.Succeeded)

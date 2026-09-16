@@ -1,6 +1,6 @@
 using Digital_Core_Layer.Services.Abstract;
 using Digital_Persistence_Layer.Model;
-using Digital_Persistence_Layer.Repositories.Interface;
+using Digital_Persistence_Layer.Repositories.Abstract;
 using Microsoft.AspNetCore.Http;
 
 namespace Digital_Core_Layer.Services.Concrete;

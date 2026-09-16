@@ -20,6 +20,7 @@ public static class ServiceRegistrations
         Services.AddScoped<ISubCategoryService, SubCategoryService>();
         Services.AddScoped<IProductService, ProductService>();
         Services.AddScoped<IProductImageService, ProductImageService>();
+        Services.AddScoped<IShoppingCartService, ShoppingCartService>();
         Services.AddDbContext<ApplicationDbContext>(opt =>
             opt.UseNpgsql(Configuration?.GetConnectionString("DefaultConnection")));
         Services.AddIdentityCore<User>()

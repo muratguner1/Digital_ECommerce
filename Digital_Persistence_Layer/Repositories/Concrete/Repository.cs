@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 using Digital_Domain_Layer.Extensions;
 using Digital_Persistence_Layer.AppDbContext;
-using Digital_Persistence_Layer.Repositories.Interface;
+using Digital_Persistence_Layer.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
 
 namespace Digital_Persistence_Layer.Repositories.Concrete;
@@ -27,6 +27,12 @@ public class Repository<T> : IRepository<T> where T : class, new()
         var entity = await Table.FindAsync(id);
         return entity;
     }
+
+    /*public async Task<T?> GetByIdGeneric<T>(Guid id) where T : class
+    {
+        var entity = await _context.Set<T>().FindAsync(id);
+        return entity ?? null;
+    }*/
 
     public Task<bool> isAnyItem(Expression<Func<T, bool>> filter = null)
     {
@@ -66,7 +72,7 @@ public class Repository<T> : IRepository<T> where T : class, new()
         return null;
     }
 
-    public async Task<T> GetWhere(Expression<Func<T, bool>> filter = null,
+    public async Task<T> GetWhere(Expression<Func<T, bool>> filter = null, //Liste dönmesi gerekiyor
         params Expression<Func<T, object>>[] includeProperties)
     {
         IQueryable<T> query = Table.AsQueryable();
