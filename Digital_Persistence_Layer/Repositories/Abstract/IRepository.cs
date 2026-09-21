@@ -19,9 +19,9 @@ public interface IRepository<T> where T : new()
     Task<T?> Update(T entity, Guid id);
     Task Delete(Guid id);
 
-    Task<PagedResult<T>> GetAllPagedResult(Expression<Func<T, bool>> filter = null,
+    Task<PagedResult<T>> GetPagedResult(Expression<Func<T, bool>> filter = null,
         Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-        int pageNumber = 1, int pageSize = 10);
+        int pageNumber = 1, int pageSize = 10, params Expression<Func<T, object>>[] includeProperties);
 
     Task<IEnumerable<T>> GetWithIncludeProperties(params Expression<Func<T, object>>[] includeProperties);
 }

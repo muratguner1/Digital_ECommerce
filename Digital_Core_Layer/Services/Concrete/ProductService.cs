@@ -44,4 +44,10 @@ public class ProductService : IProductService
         var result = await _productRepository.RemoveProduct(id);
         return result;
     }
+
+    public async Task<BaseResponseModel> GetProductsWithPagination(PageAndFilterModel model)
+    {
+        var result = await _productRepository.GetProductsWithPagination(model);
+        return result;
+    }
 }

@@ -117,4 +117,22 @@ public class ProductRepository : Repository<Product>, IProductRepository
             Message = "Product removed successfully",
         };
     }
+
+    public async Task<BaseResponseModel> GetProductsWithPagination(PageAndFilterModel model)
+    {
+        PagedResult<Product> products = await GetPagedResult(x => (x.ProductName.Contains(model.Keyword)
+                                                                   || x.ProductDescription.Contains(model.Keyword)
+                                                                   || x.Color.Contains(model.Keyword)
+                                                                   || x.SubCategory.CategoryName
+                                                                       .Contains(model.Keyword)),
+            x => x.OrderByDescending(x => x.ProductPrice), model.PageNumber, model.PageSize, x => x.ProductImages);
+
+        if (products.Items != null)
+        {
+            return new BaseResponseModel
+                { Exception = null, Message = "Products fetched successfully", Result = products };
+        }
+
+        return new BaseResponseModel { Exception = null, Message = "Products not found" };
+    }
 }

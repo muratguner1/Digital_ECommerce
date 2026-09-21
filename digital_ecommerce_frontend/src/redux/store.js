@@ -12,6 +12,7 @@ import {
 } from "redux-persist";
 import counterReducer from "./slices/counterSlice";
 import {mainCategoryApi} from "../apis/mainCategoryApi";
+import {productApi} from "../apis/productApi";
 
 const persistConfig = {
     key: "root",
@@ -21,6 +22,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
     counter: counterReducer,
     [mainCategoryApi.reducerPath]: mainCategoryApi.reducer,
+    [productApi.reducerPath]: productApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -32,7 +34,7 @@ export const store = configureStore({
             serializableCheck: {
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
             },
-        }).concat(mainCategoryApi.middleware),
+        }).concat(mainCategoryApi.middleware, productApi.middleware),
 });
 
 export const persistor = persistStore(store);

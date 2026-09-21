@@ -11,4 +11,5 @@ public interface IProductRepository : IRepository<Product>
     Task<BaseResponseModel> AddProduct(ProductDTO dto);
     Task<BaseResponseModel> UpdateProduct(UpdateProductDTO dto);
     Task<BaseResponseModel> RemoveProduct(Guid id);
+    Task<BaseResponseModel> GetProductsWithPagination(PageAndFilterModel model);
 }

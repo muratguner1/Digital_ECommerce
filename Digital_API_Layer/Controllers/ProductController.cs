@@ -1,5 +1,6 @@
 using Digital_Core_Layer.Services.Abstract;
 using Digital_Infrastructure_Layer.DTOs;
+using Digital_Persistence_Layer.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Digital_API_Layer.Controllers;
@@ -67,6 +68,18 @@ public class ProductController : ControllerBase
     public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductDTO dto)
     {
         var response = await _productService.UpdateProduct(dto);
+        if (response != null)
+        {
+            return Ok(response);
+        }
+
+        return BadRequest(response);
+    }
+
+    [HttpPost("GetWithPagination")]
+    public async Task<IActionResult> GetProductsWithPagination(PageAndFilterModel model)
+    {
+        var response = await _productService.GetProductsWithPagination(model);
         if (response != null)
         {
             return Ok(response);

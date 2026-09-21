@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import StoreProvider from "../components/StoreProvider";
+import Navbar from "../app/components/Navbar";
 
 
 const geistSans = Geist({
@@ -24,6 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
         <StoreProvider>
+          <Navbar></Navbar>
           {children}
         </StoreProvider>
       </body>

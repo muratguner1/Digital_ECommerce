@@ -116,8 +116,9 @@ public class Repository<T> : IRepository<T> where T : class, new()
         }
     }
 
-    public async Task<PagedResult<T>> GetAllPagedResult(Expression<Func<T, bool>> filter = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, int pageNumber = 1, int pageSize = 10)
+    public async Task<PagedResult<T>> GetPagedResult(Expression<Func<T, bool>> filter = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, int pageNumber = 1, int pageSize = 10,
+        params Expression<Func<T, object>>[] includeProperties)
     {
         IQueryable<T> query = Table.AsQueryable();
         if (filter != null)
@@ -129,6 +130,14 @@ public class Repository<T> : IRepository<T> where T : class, new()
         if (orderBy != null)
         {
             query = orderBy(query);
+        }
+
+        if (includeProperties.Length > 0)
+        {
+            foreach (var item in includeProperties)
+            {
+                query = query.Include(item);
+            }
         }
 
         List<T> items = await query.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
