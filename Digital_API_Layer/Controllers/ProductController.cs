@@ -15,7 +15,7 @@ public class ProductController : ControllerBase
         _productService = productService;
     }
 
-    [HttpPost("CreateProduct")]
+    [HttpPost]
     public async Task<IActionResult> AddProduct([FromBody] ProductDTO dto)
     {
         var response = await _productService.AddProduct(dto);
@@ -27,7 +27,7 @@ public class ProductController : ControllerBase
         return BadRequest(response);
     }
 
-    [HttpGet("GetAllProducts")]
+    [HttpGet]
     public async Task<IActionResult> GetAllProducts()
     {
         var response = await _productService.GetAllProducts();
@@ -39,7 +39,7 @@ public class ProductController : ControllerBase
         return BadRequest(response);
     }
 
-    [HttpGet("GetProductById/{id:guid}")]
+    [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetProductById(Guid id)
     {
         var response = await _productService.GetProductById(id);
@@ -51,7 +51,7 @@ public class ProductController : ControllerBase
         return BadRequest(response);
     }
 
-    [HttpDelete("DeleteProduct/{id:guid}")]
+    [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteProduct(Guid id)
     {
         var response = await _productService.RemoveProduct(id);
@@ -63,7 +63,7 @@ public class ProductController : ControllerBase
         return BadRequest(response);
     }
 
-    [HttpPut("UpdateProduct")]
+    [HttpPut]
     public async Task<IActionResult> UpdateProduct([FromBody] UpdateProductDTO dto)
     {
         var response = await _productService.UpdateProduct(dto);

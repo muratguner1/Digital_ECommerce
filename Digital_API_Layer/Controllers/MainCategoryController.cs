@@ -15,7 +15,7 @@ public class MainCategoryController : ControllerBase
         _mainCategoryService = mainCategoryService;
     }
 
-    [HttpPost("CreateMainCategory")]
+    [HttpPost]
     public async Task<IActionResult> CreateMainCategory([FromBody] MainCategoryDTO dto)
     {
         var response = await _mainCategoryService.CreateMainCategory(dto);
@@ -27,7 +27,7 @@ public class MainCategoryController : ControllerBase
         return BadRequest();
     }
 
-    [HttpGet("GetAllMainCategories")]
+    [HttpGet]
     public async Task<IActionResult> GetAllMainCategories()
     {
         var response = await _mainCategoryService.GetAllMainCategories();

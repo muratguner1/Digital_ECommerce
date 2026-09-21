@@ -16,7 +16,7 @@ public class ShoppingCartController : ControllerBase
         _shoppingCartService = shoppingCartService;
     }
 
-    [HttpPost("AddToCart")]
+    [HttpPost]
     public async Task<IActionResult> AddToCart(Guid productId)
     {
         var response = await _shoppingCartService.AddToCart(productId);
@@ -28,7 +28,7 @@ public class ShoppingCartController : ControllerBase
         return BadRequest(response);
     }
 
-    [HttpGet("GetCart")]
+    [HttpGet]
     public async Task<IActionResult> GetCart()
     {
         var response = await _shoppingCartService.GetCartItems();
@@ -40,7 +40,7 @@ public class ShoppingCartController : ControllerBase
         return BadRequest(response);
     }
 
-    [HttpDelete("RemoveFromCart")]
+    [HttpDelete("items/{productId:guid}")]
     public async Task<IActionResult> RemoveFromCart(Guid productId)
     {
         var response = await _shoppingCartService.RemoveFromCart(productId);
@@ -52,7 +52,7 @@ public class ShoppingCartController : ControllerBase
         return BadRequest(response);
     }
 
-    [HttpDelete("RemoveCart")]
+    [HttpDelete("{cartId:guid}")]
     public async Task<IActionResult> RemoveCart(Guid cartId)
     {
         var response = await _shoppingCartService.RemoveCart(cartId);

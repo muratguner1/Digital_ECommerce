@@ -15,7 +15,7 @@ public class SubCategoryController : ControllerBase
         _subCategoryService = subCategoryService;
     }
 
-    [HttpPost("CreateSubCategory")]
+    [HttpPost]
     public async Task<IActionResult> CreateSubCategory([FromBody] SubCategoryDTO dto)
     {
         var response = await _subCategoryService.CreateSubCategory(dto);

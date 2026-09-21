@@ -8,6 +8,12 @@ builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddSwaggerGen(); bu zaten eklendi service registrationda
 builder.Services.AddCoreRegisterServices(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
+{
+    builder.AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader();
+}));
 
 var app = builder.Build();
 
@@ -18,6 +24,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseDeveloperExceptionPage();
+app.UseCors("CorsPolicy");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

@@ -1,11 +1,11 @@
 {
     "schema_version": 2,
-    "commit": "f8c19862e8c28ba7550a041bb1e61d2dc51e2fea",
-    "indexed_at": "2026-09-11T20:32:23Z",
+    "commit": "ecc425e4f1ff5611661accc80c989e91d4a7cecb",
+    "indexed_at": "2026-09-18T18:59:50Z",
     "project": "Users-muratguner-RiderProjects-Digital_ECommerce",
-    "nodes": 171,
-    "edges": 286,
-    "original_size": 1835008,
-    "compressed_size": 85193,
-    "compression_level": 9
+    "nodes": 639,
+    "edges": 1613,
+    "original_size": 4390912,
+    "compressed_size": 475999,
+    "compression_level": 3
 }

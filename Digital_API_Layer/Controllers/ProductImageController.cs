@@ -14,7 +14,7 @@ public class ProductImageController : ControllerBase
         _productImageService = productImageService;
     }
 
-    [HttpPost("UploadImage")]
+    [HttpPost]
     public async Task<IActionResult> UploadImage([FromForm] List<IFormFile> files, Guid productId)
     {
         var response = await _productImageService.UploadImage(files, productId);
