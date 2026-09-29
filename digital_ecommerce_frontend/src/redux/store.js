@@ -11,16 +11,19 @@ import {
   REGISTER,
 } from "redux-persist";
 import counterReducer from "./slices/counterSlice";
+import searchQueryReducer from "./slices/searchSlice";
 import {mainCategoryApi} from "../apis/mainCategoryApi";
 import {productApi} from "../apis/productApi";
 
 const persistConfig = {
     key: "root",
     storage,
+    blacklist: [mainCategoryApi.reducerPath, productApi.reducerPath], // API çağrılarını persist etmekten kaçınmak için
 };
 
 const rootReducer = combineReducers({
     counter: counterReducer,
+    searchQuery: searchQueryReducer,
     [mainCategoryApi.reducerPath]: mainCategoryApi.reducer,
     [productApi.reducerPath]: productApi.reducer,
 });

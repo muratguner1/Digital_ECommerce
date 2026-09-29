@@ -8,7 +8,7 @@ import styles from './Navbar.module.css'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 // Gelecekte oluşturulacak slice'lar (Şimdilik yorum satırında):
-// import { setSearchQuery,setSearchCategoryId,resetSearchCategoryId } from '@/redux/slices/searchSlice'
+import { setSearchQuery } from '../../redux/slices/searchSlice'
 // import { clearAuth } from '@/redux/slices/authSlice'
 function Navbar() {
     const { data: categories, error, isLoading } = useGetMainCategoriesQuery();
@@ -54,8 +54,7 @@ function Navbar() {
     const handleKey = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
-            setSearchValue(searchQuery);
-            // dispatch(setSearchQuery(searchQuery)) // searchSlice oluşturulunca açılacak
+            dispatch(setSearchQuery(searchQuery));
             console.log("Arama yapıldı:", searchQuery);
         }
     }
@@ -226,6 +225,7 @@ function Navbar() {
                             placeholder="Ürün, kategori veya marka ara..."
                             className={styles.searchInput}
                             autoFocus={isSearchOpen}
+                            value={searchQuery}
                             onChange={(e) => setSearchValue(e.target.value)}
                             onKeyUp={handleKey}
                         />

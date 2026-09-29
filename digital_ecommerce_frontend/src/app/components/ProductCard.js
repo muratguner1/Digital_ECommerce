@@ -12,8 +12,6 @@ import { useDispatch } from 'react-redux';
 import toast from 'react-hot-toast';
 const ProductCard = ({ product }) => {
 
-  console.log('trigger product card', product);
-
   const [isHovered, setIsHovered] = useState(false);
   // const [AddToCart] = useAddCartMutation();
   const dispatch = useDispatch();
@@ -45,10 +43,36 @@ const ProductCard = ({ product }) => {
   }
 
 
-  // Resim URL'ini güvenli ve temiz bir şekilde oluşturan fonksiyon
-  const getImageUrl = () => {
-    if (product?.productImages && product.productImages.length > 0 && product.productImages[1]?.imageUrl) {
-      const rawPath = product.productImages[1].imageUrl;
+  // Fotoğrafları isme veya eklenme sırasına göre sıralama (1 numaralı olan veya ilk eklenen başta gelsin)
+  const sortedImages = React.useMemo(() => {
+    if (!product?.productImages || product.productImages.length === 0) return [];
+    return [...product.productImages].sort((a, b) => {
+      const urlA = a.imageUrl || '';
+      const urlB = b.imageUrl || '';
+      return urlA.localeCompare(urlB, undefined, { numeric: true, sensitivity: 'base' });
+    });
+  }, [product?.productImages]);
+
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Önceki fotoğrafa geç
+  const handlePrevImage = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentImageIndex((prev) => (prev === 0 ? sortedImages.length - 1 : prev - 1));
+  };
+
+  // Sonraki fotoğrafa geç
+  const handleNextImage = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCurrentImageIndex((prev) => (prev === sortedImages.length - 1 ? 0 : prev + 1));
+  };
+
+  // Seçili resmin URL'ini güvenli ve temiz bir şekilde oluşturan fonksiyon
+  const getImageUrl = (index = currentImageIndex) => {
+    if (sortedImages.length > 0 && sortedImages[index]?.imageUrl) {
+      const rawPath = sortedImages[index].imageUrl;
       if (rawPath.startsWith('http://') || rawPath.startsWith('https://')) {
         return rawPath;
       }
@@ -73,11 +97,41 @@ const ProductCard = ({ product }) => {
             -{product.discount}%
           </div>
         ) : null}
+
+        {/* Çoklu resim varsa sol/sağ oklar */}
+        {sortedImages.length > 1 && (
+          <>
+            <button
+              type="button"
+              className={`${styles.carouselButton} ${styles.prevButton}`}
+              onClick={handlePrevImage}
+              aria-label="Önceki Fotoğraf"
+            >
+              <FiChevronLeft size={16} />
+            </button>
+            <button
+              type="button"
+              className={`${styles.carouselButton} ${styles.nextButton}`}
+              onClick={handleNextImage}
+              aria-label="Sonraki Fotoğraf"
+            >
+              <FiChevronRight size={16} />
+            </button>
+            <div className={styles.imageDots}>
+              {sortedImages.map((_, i) => (
+                <span
+                  key={i}
+                  className={`${styles.dot} ${i === currentImageIndex ? styles.activeDot : ''}`}
+                />
+              ))}
+            </div>
+          </>
+        )}
         
         <Link href={`/product/${product.id}`} className={styles.imageLink}>
           <div className={styles.imageWrapper}>
             <img
-              src={getImageUrl()}
+              src={getImageUrl(currentImageIndex)}
               alt={product?.productName || product?.name || 'Ürün'}
               width={300}
               height={300}

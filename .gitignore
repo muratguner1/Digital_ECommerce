@@ -6,6 +6,8 @@
 # dotenv files
 .env
 
+Digital_API_Layer/wwwroot
+
 # User-specific files
 *.rsuser
 *.suo
