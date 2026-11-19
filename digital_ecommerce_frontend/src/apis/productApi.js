@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { BASE_URL } from "../constanst/url";
+import { BASE_URL } from "../constants/url";
 
 export const productApi = createApi({
     reducerPath: 'productApi',
@@ -19,8 +19,18 @@ export const productApi = createApi({
                 body: model,
             }),
             invalidatesTags: ['Product'],
+        }),
+        getProductDetailById: builder.query({
+            query: (id) => ({
+                url: `${id}`,
+                method: 'GET',
+            }),
+            providesTags: ['Product'],
         })
     })
 })
 
-export const {useGetProductsWithPaginationMutation} = productApi;
+export const {
+    useGetProductsWithPaginationMutation,
+    useGetProductDetailByIdQuery
+} = productApi;

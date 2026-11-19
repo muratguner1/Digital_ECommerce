@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { FiShoppingCart, FiHeart, FiStar, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import styles from './ProductCard.module.css';
-import { Domain_URL } from '../../constanst/url';
+import { Domain_URL } from '../../constants/url';
 // import { useAddCartMutation } from '@/Apis/cartApi'; // cartApi oluşturulunca açılacak
 import { useDispatch } from 'react-redux';
 // import { equalCart } from '@/redux/slices/counterSlice'; // counterSlice güncellenince açılacak

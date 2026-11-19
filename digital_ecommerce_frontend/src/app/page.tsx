@@ -1,134 +1,197 @@
-"use client";
-import { useState, useEffect } from "react";
+'use client';
+import { useSelector, useDispatch } from "react-redux";
+import ProductCard from './components/ProductCard';
+import styles from './page.module.css';
 import { useGetProductsWithPaginationMutation } from "../apis/productApi";
-import ProductCard from "./components/ProductCard";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { useEffect, useState } from "react";
+import { resetSearchCategoryId } from "../redux/slices/searchSlice";
 
 export default function Home() {
-  const [paginationModel, setPaginationModel] = useState({
+  // İleride sepet veya sayaç için kullanılacak Redux state'i:
+  const counter = useSelector((state: any) => state.counter?.value || 0); 
+  const dispatch = useDispatch();
+
+  const [paginationModel, setPaginationModel] = useState<any>({
     pageNumber: 1,
     pageSize: 8,
-    keyword: '',
+    keyword: "",
   });
+  const [product, setProduct] = useState<any[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
 
-  const [product, setProduct] = useState([]);
-  const [totalCount, setTotalCount] = useState(0);
+  // Redux Store'dan arama ve kategori değerlerini okuyoruz:
+  const searchValue = useSelector((state: any) => state.searchQuery?.value || "");
+  const categoryId = useSelector((state: any) => state.searchQuery?.categoryId || null);
 
-  // 1. Hook'tan tetikleyici fonksiyonu ve istek durumlarını çekiyoruz:
-  const [getProductsWithPagination, { isLoading, isError }] = useGetProductsWithPaginationMutation();
+  const [getProductsWithPagination] = useGetProductsWithPaginationMutation();
+  
+  // 1. Sayfa ilk açıldığında seçili kategori filtresini sıfırlıyoruz:
+  useEffect(() => {
+    dispatch(resetSearchCategoryId());
+  }, [dispatch]);
 
-  // 2. Sayfa açıldığında veya paginationModel değiştiğinde isteği atıyoruz:
+  // 2. Arama kutusuna yeni bir şey yazıldığında (searchValue değiştikçe) 1. sayfadan arat:
+  useEffect(() => {
+    setPaginationModel((prev: any) => ({
+      ...prev,
+      keyword: searchValue,
+      pageNumber: 1
+    }));
+  }, [searchValue]);
+
+  // 3. Menüden bir kategoriye tıklandığında (categoryId değiştikçe) 1. sayfadan filtrele:
+  // (İLERİDE: Backend tarafında CategoryId filtresi eklendiğinde aktif olarak çalışacaktır)
+  useEffect(() => {
+    if (categoryId) {
+      setPaginationModel((prev: any) => ({
+        ...prev,
+        pageNumber: 1,
+        categoryId: categoryId
+      }));
+    }
+  }, [categoryId]);
+
+  // 4. Sayfa, arama veya kategori filtresi değiştiğinde ürünleri API'den çek:
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await getProductsWithPagination(paginationModel).unwrap();
-        console.log("Pagination Response:", response);
         setProduct(response.result?.items || []);
-        setTotalCount(response.result?.totalCount || 0);
+        setTotalPages(Math.ceil((response.result?.totalCount || 0) / paginationModel.pageSize) || 1);
+        setTotalItems(response.result?.totalCount || 0);
       } catch (error) {
-        console.error('Error occurred when fetching products', error);
+        console.error("Error fetching products:", error);
       }
     };
+
     fetchProducts();
   }, [paginationModel, getProductsWithPagination]);
 
-  const totalPages = Math.ceil(totalCount / paginationModel.pageSize) || 1;
-
+  // Sayfa değiştirme fonksiyonu
   const handlePageChange = (newPage: number) => {
-    if (newPage < 1 || newPage > totalPages || newPage === paginationModel.pageNumber) return;
-    setPaginationModel((prev) => ({
+    setPaginationModel((prev: any) => ({
       ...prev,
-      pageNumber: newPage,
+      pageNumber: newPage
     }));
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // 5'li sayfalama butonlarını ve "..." (dots) mantığını oluşturan fonksiyon
+  const renderPaginationButtons = () => {
+    const buttons = [];
+    const maxVisibleButtons = 5;
+    let startPage = Math.max(1, paginationModel.pageNumber - Math.floor(maxVisibleButtons / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisibleButtons - 1);
+    
+    if (endPage - startPage + 1 < maxVisibleButtons) {
+      startPage = Math.max(1, endPage - maxVisibleButtons + 1);
+    }
+
+    // Önceki Sayfa Butonu (<<)
+    buttons.push(
+      <button 
+        key="prev" 
+        onClick={() => handlePageChange(Math.max(1, paginationModel.pageNumber - 1))}
+        disabled={paginationModel.pageNumber === 1}
+        className={styles.paginationButton}
+        aria-label="Önceki Sayfa"
+      >
+        &laquo;
+      </button>
+    );
+
+    // İlk sayfa (1) ve gerekiyorsa sol üç nokta (...)
+    if (startPage > 1) {
+      buttons.push(
+        <button 
+          key="1" 
+          onClick={() => handlePageChange(1)}
+          className={`${styles.paginationButton} ${1 === paginationModel.pageNumber ? styles.active : ''}`}
+        >
+          1
+        </button>
+      );
+      if (startPage > 2) {
+        buttons.push(<span key="dots1" className={styles.paginationDots}>...</span>);
+      }
+    }
+
+    // Ortadaki numaralı butonlar
+    for (let i = startPage; i <= endPage; i++) {
+      buttons.push(
+        <button 
+          key={i} 
+          onClick={() => handlePageChange(i)}
+          className={`${styles.paginationButton} ${i === paginationModel.pageNumber ? styles.active : ''}`}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    // Son sayfa ve gerekiyorsa sağ üç nokta (...)
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        buttons.push(<span key="dots2" className={styles.paginationDots}>...</span>);
+      }
+      buttons.push(
+        <button 
+          key={totalPages} 
+          onClick={() => handlePageChange(totalPages)}
+          className={`${styles.paginationButton} ${totalPages === paginationModel.pageNumber ? styles.active : ''}`}
+        >
+          {totalPages}
+        </button>
+      );
+    }
+
+    // Sonraki Sayfa Butonu (>>)
+    buttons.push(
+      <button 
+        key="next" 
+        onClick={() => handlePageChange(Math.min(totalPages, paginationModel.pageNumber + 1))}
+        disabled={paginationModel.pageNumber === totalPages}
+        className={styles.paginationButton}
+        aria-label="Sonraki Sayfa"
+      >
+        &raquo;
+      </button>
+    );
+
+    return buttons;
+  };
+
   return (
-    <main className="container mx-auto p-4 min-h-screen flex flex-col justify-between">
+    <div className={styles.container}>
+      <h1 className={styles.title}>Telefonlar</h1>
+      <p className={styles.subtitle}>En yeni ve popüler modeller</p>
+      
       {/* Ürün Listesi */}
-      <div>
-        {isLoading ? (
-          <div className="p-16 text-center text-lg text-gray-600">Ürünler Yükleniyor...</div>
-        ) : isError ? (
-          <div className="p-16 text-center text-red-500 font-semibold">Ürünler yüklenirken bir hata oluştu!</div>
-        ) : product && product.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {product.map((item: any) => (
-              <ProductCard key={item.id} product={item} />
-            ))}
-          </div>
+      <div className={styles.productGrid}>
+        {product && product.length > 0 ? (
+          product.map((phone: any) => (
+            <ProductCard key={phone.id} product={phone} />
+          ))
         ) : (
-          <div className="p-16 text-center text-gray-500">Kayıtlı ürün bulunamadı.</div>
+          <p style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#6b7280', padding: '2rem 0' }}>
+            Aramanıza uygun ürün bulunamadı.
+          </p>
         )}
       </div>
 
-      {/* Pagination (Sayfalama) Kontrolleri */}
+      {/* Sayfalama (Pagination) Alanı */}
       {totalPages > 1 && (
-        <div className="my-10 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-200 pt-6">
-          <div className="text-sm text-gray-500">
-            Toplam <span className="font-semibold text-gray-800">{totalCount}</span> üründen{' '}
-            <span className="font-semibold text-gray-800">
-              {(paginationModel.pageNumber - 1) * paginationModel.pageSize + 1}
-            </span>
-            -
-            <span className="font-semibold text-gray-800">
-              {Math.min(paginationModel.pageNumber * paginationModel.pageSize, totalCount)}
-            </span>{' '}
-            arası gösteriliyor
-          </div>
-
-          <div className="flex items-center gap-2">
-            {/* Önceki Sayfa Butonu */}
-            <button
-              onClick={() => handlePageChange(paginationModel.pageNumber - 1)}
-              disabled={paginationModel.pageNumber === 1 || isLoading}
-              className={`flex items-center gap-1 px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
-                paginationModel.pageNumber === 1 || isLoading
-                  ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50'
-                  : 'border-gray-300 text-gray-700 hover:bg-gray-100 cursor-pointer bg-white'
-              }`}
-            >
-              <FiChevronLeft size={16} />
-              Önceki
-            </button>
-
-            {/* Sayfa Numaraları */}
-            <div className="flex items-center gap-1">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
-                const isActive = pageNum === paginationModel.pageNumber;
-                return (
-                  <button
-                    key={pageNum}
-                    onClick={() => handlePageChange(pageNum)}
-                    disabled={isLoading}
-                    className={`min-w-9 h-9 px-3 rounded-lg text-sm font-medium transition-all ${
-                      isActive
-                        ? 'bg-blue-600 text-white font-bold shadow-sm'
-                        : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-100 hover:border-gray-300'
-                    }`}
-                  >
-                    {pageNum}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Sonraki Sayfa Butonu */}
-            <button
-              onClick={() => handlePageChange(paginationModel.pageNumber + 1)}
-              disabled={paginationModel.pageNumber === totalPages || isLoading}
-              className={`flex items-center gap-1 px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
-                paginationModel.pageNumber === totalPages || isLoading
-                  ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-gray-50'
-                  : 'border-gray-300 text-gray-700 hover:bg-gray-100 cursor-pointer bg-white'
-              }`}
-            >
-              Sonraki
-              <FiChevronRight size={16} />
-            </button>
+        <div className={styles.paginationContainer}>
+          <p className={styles.paginationInfo}>
+            Toplam {totalItems} ürünün {paginationModel.pageSize * (paginationModel.pageNumber - 1) + 1}-
+            {Math.min(paginationModel.pageSize * paginationModel.pageNumber, totalItems)} arası gösteriliyor
+          </p>
+          <div className={styles.pagination}>
+            {renderPaginationButtons()}
           </div>
         </div>
       )}
-    </main>
+    </div>
   );
 }

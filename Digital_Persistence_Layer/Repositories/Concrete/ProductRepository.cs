@@ -124,7 +124,8 @@ public class ProductRepository : Repository<Product>, IProductRepository
                                                                    || x.ProductDescription.Contains(model.Keyword)
                                                                    || x.Color.Contains(model.Keyword)
                                                                    || x.SubCategory.CategoryName
-                                                                       .Contains(model.Keyword)),
+                                                                       .Contains(model.Keyword) ||
+                                                                   x.SubCategoryId == model.CategoryId),
             x => x.OrderByDescending(x => x.ProductPrice), model.PageNumber, model.PageSize, x => x.ProductImages);
 
         if (products.Items != null)
